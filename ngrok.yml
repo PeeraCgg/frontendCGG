@@ -1,0 +1,8 @@
+version: "2"
+tunnels:
+  frontend:
+    addr: 3000           # พอร์ตของ frontend (React)
+    proto: http          # ประเภทของ protocol ที่ต้องการใช้
+  backend:
+    addr: 3001           # พอร์ตของ backend (Express)
+    proto: http          # ประเภทของ protocol ที่ต้องการใช้
