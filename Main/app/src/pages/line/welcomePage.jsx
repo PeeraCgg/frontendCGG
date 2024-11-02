@@ -6,7 +6,7 @@ const WelcomePage = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/checkProfile'); // นำทางไปยังหน้าอื่น เช่น หน้า Home
+    navigate('/verifyPhone'); // นำทางไปยังหน้าอื่น เช่น หน้า Home
   };
 
   

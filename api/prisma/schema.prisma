@@ -23,15 +23,27 @@ status String @default("use")
 
 }
 
+model Otp {
+  id         Int       @id @default(autoincrement())
+  email      String
+  otp        String
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+
+  usermain   Usermain? @relation(fields: [email], references: [email]) // Relation to Usermain based on email
+}
+
 model Usermain {
   id        Int         @id @default(autoincrement())
   name      String
   surname   String
   mobile    String      @unique
   birthdate DateTime
-  email     String
-
+  email     String      @unique
   pdpa      CheckPDPA?
+
+  otps      Otp[]       // List of OTPs associated with this user by email
+  @@unique([mobile, email]) 
 }
 
 model CheckPDPA {

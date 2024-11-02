@@ -21,6 +21,7 @@ const otp = thaibulksmsApi.otp(options);
 
 
 
+
 // Endpoint to get user by mobile number
 app.post('/getuser', async (req, res) => {
     const { mobile } = req.body;
@@ -28,7 +29,7 @@ app.post('/getuser', async (req, res) => {
     try {
         // Find user by mobile number
         const user = await prisma.usermain.findUnique({
-            where: { mobile },
+            where: { mobile ,email}
         });
 
         // Check if user exists and respond accordingly
@@ -212,6 +213,9 @@ app.get('/', (req, res) => {
     console.log('Request received at /user');
     res.json({ message: 'User data' });
 });
+
+
+
 
 
 export default app;

@@ -2,7 +2,7 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client'; 
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 const prisma = new PrismaClient(); // เป็นการสร้างตัวแปร เพื่อใช้ 

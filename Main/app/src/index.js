@@ -8,14 +8,15 @@ import WelcomePage from './pages/line/welcomePage'
 
 import './index.css';  // Import ไฟล์ CSS ที่คุณสร้าง
 import PhoneNumberForm from './pages/line/verifyPhone';
-import  ProfileForm from './pages/line/checkProfile';
+import  UserForm from './pages/line/checkProfile';
 import RegistrationSuccess from './pages/line/viewProfile';
 import ConsentForm from './pages/line/checkPdpa';
 import ProfilePage from './pages/line/profilePage';
 import RewardsPage from './pages/line/rewardsPage';
 import FoodRewards from './pages/line/foodRewards';
 import VerifyOTPPage from './pages/line/checkOtp';
-
+import RequestOtp from './pages/line/verifyEmail';
+import VerifyOtp from './pages/line/checkOtpEmail';
 
 
 
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
   },
   {
     path:'/checkProfile',
-    element:<ProfileForm />
+    element:<UserForm />
   },
   {
     path:'/checkPdpa',
@@ -56,6 +57,13 @@ const router = createBrowserRouter([
   {
     path:'/foodRewards',
     element:<FoodRewards />
+  },
+  {
+    path:'/verifyEmail',
+    element:<RequestOtp/>
+  },{
+    path:'/checkOtpEmail',
+    element:<VerifyOtp/>
   }
 
 ]);
