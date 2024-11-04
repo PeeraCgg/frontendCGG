@@ -10,16 +10,16 @@ export const generateOtp = async (email) => {
   // ตั้งเวลาหมดอายุ OTP (เช่น หมดอายุภายใน 10 นาที)
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-  // ลบ OTP เก่าที่ค้างอยู่ของอีเมลนี้ในฐานข้อมูล (ถ้ามี)
-  await prisma.otp.deleteMany({
+  const newOtp = await prisma.otp.upsert({
     where: {
       email: email,
     },
-  });
-
-  // บันทึก OTP ใหม่ลงในฐานข้อมูล
-  const newOtp = await prisma.otp.create({
-    data: {
+    update: {
+      otp,
+      expiresAt,
+      createdAt: new Date(), // Optional: Update the createdAt timestamp if needed
+    },
+    create: {
       email,
       otp,
       expiresAt,

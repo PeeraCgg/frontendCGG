@@ -38,8 +38,8 @@ const UserForm = () => {
     const syncUserData = async (contactInfo) => {
         try {
             const response = await axios.post('http://localhost:3001/user/getuser', { 
-                mobile: contactInfo.phoneNumber, 
-                email: contactInfo.email
+                mobile: contactInfo, 
+                email: contactInfo
                 });
 
             if (response.data.success) {
@@ -85,7 +85,7 @@ const UserForm = () => {
             if (response.data.success) {
                 console.log(response.data.message);
                 setIsNewUser(false);
-                navigate('/checkPdpa', { state: { mobile: userData.mobile } });
+                navigate('/checkPdpa', { state: { mobile: userData.mobile ,email: userData.email } });
             } else {
                 showMessage('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
             }
@@ -97,8 +97,18 @@ const UserForm = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setUserData({ ...userData, [name]: value });
+        
+        if (name === "mobile") {
+            // กรองเฉพาะตัวเลขและจำกัดให้ไม่เกิน 10 หลัก
+            const sanitizedValue = value.replace(/\D/g, ''); // ลบตัวอักษรที่ไม่ใช่ตัวเลข
+            if (sanitizedValue.length <= 10) {
+                setUserData({ ...userData, [name]: sanitizedValue });
+            }
+        } else {
+            setUserData({ ...userData, [name]: value });
+        }
     };
+    
       const handleCancel = () => {
         navigate('/');
       };

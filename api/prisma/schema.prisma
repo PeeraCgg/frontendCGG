@@ -25,7 +25,7 @@ status String @default("use")
 
 model Otp {
   id         Int       @id @default(autoincrement())
-  email      String
+  email      String    @unique
   otp        String
   createdAt  DateTime  @default(now())
   expiresAt  DateTime
@@ -35,10 +35,10 @@ model Otp {
 
 model Usermain {
   id        Int         @id @default(autoincrement())
-  name      String
-  surname   String
-  mobile    String      @unique
-  birthdate DateTime
+  name      String?     // ทำให้เป็น optional
+  surname   String?     // ทำให้เป็น optional
+  mobile    String?     @unique
+  birthdate DateTime?
   email     String      @unique
   pdpa      CheckPDPA?
 

@@ -15,7 +15,7 @@ const RegistrationSuccess = () => {
         {/* Logo */}
         <div className="mb-6">
           <img 
-            src="/path/to/logo.png" 
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWALG5llGqOBpVrtqnUc7_rlmEBJ-_BaDsow&s"
             alt="Chee Chan Golf Resort Logo" 
             className="h-20" 
           />

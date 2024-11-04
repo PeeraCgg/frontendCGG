@@ -6,48 +6,75 @@ const ConsentForm = () => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
     const [mobile, setMobile] = useState('');
+    const [email, setEmail] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
 
     // เมื่อหน้าโหลด เราจะตั้งค่า mobile จาก state ที่ถูกส่งมา
     useEffect(() => {
-        if (location.state && location.state.mobile) {
-            setMobile(location.state.mobile);
+        if (location.state) {
+            // ตั้งค่า mobile และ email ถ้ามีอยู่ใน location.state
+            if (location.state.mobile) {
+                setMobile(location.state.mobile);
+            }
+            if (location.state.email) {
+                setEmail(location.state.email);
+            }
+    
+            // หากไม่มีทั้ง mobile และ email ให้นำทางกลับไปหน้าแรก
+            if (!location.state.mobile && !location.state.email) {
+                alert('No phone number or email provided');
+                navigate('/');
+            }
         } else {
-            alert('No phone number provided');
+            // หากไม่มี location.state เลย ให้นำทางกลับไปหน้าแรก
+            alert('No phone number or email provided');
             navigate('/');
         }
     }, [location, navigate]);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (checkbox1 && checkbox2) {
-            try {
-                const response = await axios.post('http://localhost:3001/user/saveConsent', {
-                    mobile,
-                    checkbox1,
-                    checkbox2,
-                });
-
-                if (response.status === 201) {
-                    navigate('/viewProfile');
-                } else {
-                    alert(response.data.message || 'Failed to save consent.');
-                }
-            } catch (error) {
-                if (error.response) {
-                    console.error('Backend returned status:', error.response.status);
-                    alert(error.response.data.message || 'An error occurred.');
-                } else {
-                    console.error('Network or unexpected error:', error);
-                    alert('Failed to connect to the server. Please try again later.');
-                }
-            }
-        } else {
+    
+        // ตรวจสอบว่ามีอย่างน้อยหนึ่งใน checkbox ถูกเลือก
+        if (!checkbox1 || !checkbox2) {
             alert('Please check both conditions to proceed.');
+            return;
+        }
+    
+        // ตรวจสอบว่ามี mobile หรือ email อย่างน้อยหนึ่งค่า
+        if (!mobile && !email) {
+            alert('Either mobile number or email is required.');
+            return;
+        }
+    
+        try {
+            const response = await axios.post('http://localhost:3001/user/saveConsent', {
+                mobile,
+                email,
+                checkbox1,
+                checkbox2,
+            });
+    
+            if (response.status === 201) {
+                navigate('/viewProfile');
+            } else {
+                alert(response.data.message || 'Failed to save consent.');
+            }
+        } catch (error) {
+            if (error.response) {
+                // จัดการกับข้อผิดพลาดจาก backend
+                console.error('Backend returned status:', error.response.status);
+                alert(error.response.data.message || 'An error occurred.');
+            } else {
+                // จัดการกับข้อผิดพลาดที่ไม่ใช่การตอบกลับจาก backend (เช่น ปัญหาเครือข่าย)
+                console.error('Network or unexpected error:', error);
+                alert('Failed to connect to the server. Please try again later.');
+            }
         }
     };
+    
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">

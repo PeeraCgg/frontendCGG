@@ -10,6 +10,18 @@ const requestOtp = async (req, res) => {
     if (!email) {
       return res.status(400).send('Email is required');
     }
+     // ตรวจสอบว่ามีผู้ใช้ที่ใช้อีเมลนี้หรือยัง
+     let user = await prisma.usermain.findUnique({
+      where: { email },
+    });
+      // ถ้าไม่มีผู้ใช้ที่ใช้อีเมลนี้ ให้สร้างผู้ใช้ใหม่ที่มีเฉพาะอีเมลนี้
+      if (!user) {
+        user = await prisma.usermain.create({
+          data: {
+            email,
+           },
+        });
+      }
 
     // สร้างและบันทึก OTP
     const otp = await generateOtp(email);

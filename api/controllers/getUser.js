@@ -24,13 +24,15 @@ const otp = thaibulksmsApi.otp(options);
 
 // Endpoint to get user by mobile number
 app.post('/getuser', async (req, res) => {
-    const { mobile } = req.body;
+    const { mobile, email } = req.body; 
 
     try {
         // Find user by mobile number
         const user = await prisma.usermain.findUnique({
-            where: { mobile ,email}
-        });
+            where: email ? { email } : { mobile, email },
+            include: { otps: true },
+
+    });
 
         // Check if user exists and respond accordingly
         if (user) {
@@ -63,31 +65,37 @@ app.post('/add-or-update', async (req, res) => {
     const { name, surname, mobile, birthdate, email } = req.body;
 
     try {
-        // Check if user exists
-        let user = await prisma.usermain.findUnique({
-            where: { mobile },
+        // ตรวจสอบว่ามีผู้ใช้ที่ใช้อีเมลหรือเบอร์โทรนี้หรือไม่
+        let user = await prisma.usermain.findFirst({
+            where: {
+                OR: [
+                    { mobile },
+                    { email }
+                ]
+            }
         });
 
         if (user) {
-            // If user exists, update user data
+            // ถ้ามีผู้ใช้ที่มี email หรือ mobile นี้อยู่ ให้ทำการอัปเดตข้อมูล
             user = await prisma.usermain.update({
-                where: { mobile },
+                where: { id: user.id },
                 data: {
                     name,
                     surname,
-                    birthdate: new Date(birthdate),
+                    mobile,
+                    birthdate: birthdate ? new Date(birthdate) : null, // ตรวจสอบวันที่ให้เป็นค่าว่างถ้าไม่มี
                     email,
                 },
             });
             res.json({ success: true, message: 'User updated successfully', user });
         } else {
-            // If user does not exist, create new user
+            // ถ้าไม่มีผู้ใช้อยู่แล้ว ให้สร้างข้อมูลใหม่
             user = await prisma.usermain.create({
                 data: {
                     name,
                     surname,
                     mobile,
-                    birthdate: new Date(birthdate),
+                    birthdate: birthdate ? new Date(birthdate) : null,
                     email,
                 },
             });
@@ -121,21 +129,31 @@ app.put('/update', async (req, res) => {
     }
 });
 app.post('/saveConsent', async (req, res) => {
-    const { mobile, checkbox1, checkbox2 } = req.body;
-
+    const {mobile,email, checkbox1, checkbox2 } = req.body;
+    console.log("Received data:", { mobile, email, checkbox1, checkbox2 }); 
     // ฟังก์ชันตรวจสอบรูปแบบเบอร์โทรศัพท์
-    const validateMobile = (mobile) => /^[0-9]{10}$/.test(mobile);
+    // const validateMobile = (mobile) => /^[0-9]{10}$/.test(mobile);
 
     try {
-        // ตรวจสอบรูปแบบเบอร์โทรศัพท์
-        if (!validateMobile(mobile)) {
-            return res.status(400).json({ success: false, message: 'Invalid mobile number format' });
+         // ตรวจสอบว่า mobile หรือ email ต้องมีอย่างน้อยหนึ่งค่า
+         if (!mobile && !email) {
+            return res.status(400).json({ success: false, message: 'Mobile or email is required' });
         }
+            // ตรวจสอบรูปแบบเบอร์โทรศัพท์เฉพาะกรณีที่มีการส่ง mobile เข้ามา
+        // if (mobile && !validateMobile(mobile)) {
+        //     return res.status(400).json({ success: false, message: 'Invalid mobile number format' });
+        //     }
 
-        // Find user by mobile number
-        const user = await prisma.usermain.findUnique({
-            where: { mobile },
-        });
+             // ค้นหาผู้ใช้โดยใช้ mobile หรือ email
+            const user = await prisma.usermain.findFirst({
+                where: {
+                    OR: [
+                        { mobile },
+                        { email },
+                    ],
+                },
+            });
+            console.log("User found:", user); // ตรวจสอบว่าพบผู้ใช้หรือไม่
 
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
@@ -154,10 +172,10 @@ app.post('/saveConsent', async (req, res) => {
                 checkbox2,
             },
         });
-
+        console.log("Consent saved successfully:", pdpa); // ตรวจสอบว่าบันทึกข้อมูลสำเร็จหรือไม่
         res.status(201).json({ success: true, message: 'Consent saved successfully!', pdpa });
     } catch (error) {
-        console.error('Error saving consent:', error);
+        console.error('Error saving consent:', error); // แสดงข้อผิดพลาดโดยละเอียด
         res.status(500).json({ success: false, message: 'Failed to save consent. Please try again.' });
     }
 });
