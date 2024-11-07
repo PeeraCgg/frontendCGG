@@ -34,16 +34,19 @@ model Otp {
 }
 
 model Usermain {
-  id        Int         @id @default(autoincrement())
-  name      String?     // ทำให้เป็น optional
-  surname   String?     // ทำให้เป็น optional
-  mobile    String?     @unique
-  birthdate DateTime?
-  email     String      @unique
-  pdpa      CheckPDPA?
+  id                Int         @id @default(autoincrement())
+  name              String?     // ชื่อ (optional)
+  surname           String?     // นามสกุล (optional)
+  fullname          String?     // รวมชื่อและนามสกุลจาก name และ surname
+  mobile            String?     @unique
+  birthdate         DateTime?
+  startPrivilegeDate DateTime?  // กำหนดวันที่เริ่มสิทธิพิเศษ (optional)
+  email             String      @unique
+  pdpa              CheckPDPA?  // สถานะ PDPA consent
 
-  otps      Otp[]       // List of OTPs associated with this user by email
-  @@unique([mobile, email]) 
+  otps              Otp[]       // ลิสต์ OTP ที่เกี่ยวข้องกับ email ของผู้ใช้
+  
+  @@unique([mobile, email])     // กำหนด mobile และ email เป็น unique key
 }
 
 model CheckPDPA {

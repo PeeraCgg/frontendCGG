@@ -1,10 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate  } from 'react-router-dom';
+import { getEmailFromLocalStorage , saveEmailToLocalStorage } from '../../utils/localStorageUtils';
 const RegistrationSuccess = () => {
   const navigate = useNavigate(); // สร้างตัวแปร navigate
+  const email = getEmailFromLocalStorage(); // ดึง email จาก Local Storage
 
   const handleViewProfile = () => {
+    saveEmailToLocalStorage(email); // บันทึก email ใน Local Storage สำหรับหน้าโปรไฟล์
     navigate('/profilePage'); // เปลี่ยนเส้นทางไปยังหน้า "/profile"
   };
 

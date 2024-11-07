@@ -1,16 +1,24 @@
 // VerifyOtp.js
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState , useEffect } from 'react';
+import {  useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { getEmailFromLocalStorage } from '../../utils/localStorageUtils';
+import { saveEmailToLocalStorage } from '../../utils/localStorageUtils';
 function VerifyOtp() {
   const [otp, setOtp] = useState(['','','','','','']);
   const [message, setMessage] = useState('');
-  const location = useLocation();
   const navigate = useNavigate();
   
   // Get email from location state
-  const email = location.state?.email;
+  const email = getEmailFromLocalStorage();
+  useEffect(() => {
+    if (!email) {
+      // ถ้าไม่มี email ใน Local Storage ให้กลับไปที่หน้า RequestOtp
+      navigate('/requestOtp');
+    }
+  }, [email, navigate]);
+
+
   const handleChange = (e, index) => {
     const value = e.target.value;
     if (/^\d$/.test(value) || value === '') { // ตรวจสอบให้แน่ใจว่าเป็นตัวเลข
@@ -53,8 +61,9 @@ function VerifyOtp() {
       });
 
       if (response.status === 200) {
+        saveEmailToLocalStorage(email);
         // Navigate to the success page or dashboard if OTP verification is successful
-        navigate('/checkProfile', { state: { email } });
+        navigate('/checkProfile');
       } else {
         console.error('OTP verification failed');
       }

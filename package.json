@@ -1,5 +1,14 @@
 {
+ "scripts": {
+  "start": "concurrently \"npm run server\" \"npm run client\"",
+  "server": "node api/server.js",
+  "client": "npm start --prefix Main/app"
+},
+
   "dependencies": {
     "nodemailer": "^6.9.16"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
   }
 }

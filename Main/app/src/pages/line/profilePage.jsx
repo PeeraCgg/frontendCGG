@@ -1,23 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { getEmailFromLocalStorage ,saveEmailToLocalStorage } from '../../utils/localStorageUtils';
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(); // สร้าง ref สำหรับเมนู
+  const email = getEmailFromLocalStorage(); // ดึง email จาก Local Storage
 
   const handleViewRewards = () => {
-    navigate('/rewardsPage');
+    saveEmailToLocalStorage(email); // บันทึก email ลง Local Storage
+    navigate('/rewardsPage'); // นำทางไปหน้า rewardsPage โดยไม่ใช้ state
   };
+  
   const handleEditProfile = () => {
-    navigate('/edit-profile');
-    setMenuOpen(false); // ปิดเมนูหลังจากคลิก
+    saveEmailToLocalStorage(email); // บันทึก email ลง Local Storage
+    navigate('/edit-profile'); // นำทางไปหน้า edit-profile โดยไม่ใช้ state
+    setMenuOpen(false);
   };
 
-  // ฟังก์ชันนำทางไปยังหน้า Consent
   const handleConsent = () => {
-    navigate('/consent');
-    setMenuOpen(false); // ปิดเมนูหลังจากคลิก
+    saveEmailToLocalStorage(email); // บันทึก email ลง Local Storage
+    navigate('/edit-consent'); // นำทางไปหน้า edit-consent โดยไม่ใช้ state
+    setMenuOpen(false);
   };
 
   const toggleMenu = () => {

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { saveEmailToLocalStorage } from '../../utils/localStorageUtils';
 function RequestOtp() {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
@@ -16,8 +17,12 @@ function RequestOtp() {
 
       if (response.status === 200) {
         console.log("Otp sent successfully")
+        // บันทึก email ไว้ใน Local Storage
+        saveEmailToLocalStorage(email);
+
+        
         // Navigate to verify OTP page and pass email as state
-        navigate('/checkOtpEmail', { state: { email } });
+        navigate('/checkOtpEmail');
       } else {
         console.error('Error sending OTP request');
       }

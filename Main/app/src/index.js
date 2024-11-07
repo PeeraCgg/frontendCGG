@@ -17,8 +17,8 @@ import FoodRewards from './pages/line/foodRewards';
 import VerifyOTPPage from './pages/line/checkOtp';
 import RequestOtp from './pages/line/verifyEmail';
 import VerifyOtp from './pages/line/checkOtpEmail';
-
-
+import EditProfile from './pages/line/editProfile';
+import EditConsent from './pages/line/editConsent';
 
 const router = createBrowserRouter([
 // [] ใช้กรณี ใช้ array มีหลายหน้า
@@ -61,9 +61,18 @@ const router = createBrowserRouter([
   {
     path:'/verifyEmail',
     element:<RequestOtp/>
-  },{
+  },
+  {
     path:'/checkOtpEmail',
     element:<VerifyOtp/>
+  },
+  {
+    path:'/edit-profile',
+    element:<EditProfile/>
+  },
+  {
+    path:'/edit-consent',
+    element:< EditConsent/>
   }
 
 ]);

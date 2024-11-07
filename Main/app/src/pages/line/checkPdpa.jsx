@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-
+import { getEmailFromLocalStorage , saveEmailToLocalStorage } from '../../utils/localStorageUtils';
 const ConsentForm = () => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
@@ -12,27 +12,25 @@ const ConsentForm = () => {
 
     // เมื่อหน้าโหลด เราจะตั้งค่า mobile จาก state ที่ถูกส่งมา
     useEffect(() => {
-        if (location.state) {
-            // ตั้งค่า mobile และ email ถ้ามีอยู่ใน location.state
-            if (location.state.mobile) {
-                setMobile(location.state.mobile);
-            }
-            if (location.state.email) {
-                setEmail(location.state.email);
-            }
-    
-            // หากไม่มีทั้ง mobile และ email ให้นำทางกลับไปหน้าแรก
-            if (!location.state.mobile && !location.state.email) {
-                alert('No phone number or email provided');
-                navigate('/');
-            }
+        // ดึง email จาก Local Storage
+        const emailFromStorage = getEmailFromLocalStorage();
+        if (emailFromStorage) {
+            setEmail(emailFromStorage);
         } else {
-            // หากไม่มี location.state เลย ให้นำทางกลับไปหน้าแรก
-            alert('No phone number or email provided');
+            alert('No email provided');
+            navigate('/');
+        }
+
+        // ดึง mobile จาก state หรือ Local Storage
+        const mobileFromState = location.state?.mobile;
+        if (mobileFromState) {
+            setMobile(mobileFromState);
+        } else {
+            alert('No phone number provided');
             navigate('/');
         }
     }, [location, navigate]);
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -58,7 +56,9 @@ const ConsentForm = () => {
             });
     
             if (response.status === 201) {
-                navigate('/viewProfile');
+                  // Save email to Local Storage for next page usage
+                saveEmailToLocalStorage(email);
+                navigate('/viewProfile', { state: { mobile } });
             } else {
                 alert(response.data.message || 'Failed to save consent.');
             }
