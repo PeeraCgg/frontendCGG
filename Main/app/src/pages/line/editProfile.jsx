@@ -45,7 +45,7 @@ const EditProfile = () => {
 
     const handleSave = async () => {
         try {
-            const response = await axios.post('http://localhost:3001/user/update-profile', userData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/update-profile`, userData);
             if (response.data.success) {
                 console.log(response.data.message);
                 navigate('/profilePage');
