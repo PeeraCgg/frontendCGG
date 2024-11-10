@@ -10,7 +10,7 @@ const PhoneNumberForm = () => {
   const handleRequestOTP = async (e) => {
       e.preventDefault();
       try {
-          const response = await axios.post('http://localhost:3001/user/request-otp', { phone_number: phoneNumber });
+          const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/request-otp`, { phone_number: phoneNumber });
           const token = response.data.token; // สมมุติว่า token ได้มาจาก response
           setMessage('OTP has been sent to your phone.');
 

@@ -40,7 +40,7 @@ const UserForm = () => {
 
     const syncUserData = async (email) => {
         try {
-            const response = await axios.post('http://localhost:3001/user/getuser', { email });
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/getuser`, { email });
 
             if (response.data.success) {
                 const user = response.data.user;
@@ -82,7 +82,7 @@ const UserForm = () => {
         e.preventDefault();
         try {
             const fullName = `${userData.name} ${userData.surname}`;
-            const response = await axios.post('http://localhost:3001/user/add-or-update', {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/add-or-update`, {
                 ...userData,
                 fullname: fullName,
         });

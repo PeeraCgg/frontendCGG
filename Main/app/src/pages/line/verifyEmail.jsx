@@ -11,7 +11,7 @@ function RequestOtp() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3001/auth/request-otp-e', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/request-otp-e`, {
         email,
       });
 

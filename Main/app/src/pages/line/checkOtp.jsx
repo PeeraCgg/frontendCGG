@@ -52,7 +52,7 @@ const VerifyOTPPage = () => {
         e.preventDefault();
         const otpCode = otp.join(''); // รวมค่าในช่อง OTP เป็น string เดียว
         try {
-            const response = await axios.post('http://localhost:3001/user/verify-otp', { token, otp_code: otpCode });
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/verify-otp`, { token, otp_code: otpCode });
             const data = response.data; 
             setMessage('OTP verified successfully.');
 

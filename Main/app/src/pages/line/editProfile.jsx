@@ -19,7 +19,7 @@ const EditProfile = () => {
         const fetchUserProfile = async () => {
             if (email) {
                 try {
-                    const response = await axios.post('http://localhost:3001/user/get-profile', { email });
+                    const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/get-profile`, { email });
                     if (response.data.success) {
                         setUserData(response.data.user); // ตั้งค่า userData จากข้อมูลในฐานข้อมูล
                     } else {

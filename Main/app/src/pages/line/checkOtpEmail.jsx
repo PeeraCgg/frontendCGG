@@ -8,6 +8,7 @@ function VerifyOtp() {
   const [otp, setOtp] = useState(['','','','','','']);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const [countdown, setCountdown] = useState(0);
   
   // Get email from location state
   const email = getEmailFromLocalStorage();
@@ -55,7 +56,7 @@ function VerifyOtp() {
     const otpCode = otp.join(''); // รวมค่า OTP ให้เป็น string เดียว
 
     try {
-      const response = await axios.post('http://localhost:3001/auth/verify-otp-e', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/verify-otp-e`, {
         email,
         otp: otpCode,
       });
@@ -71,6 +72,37 @@ function VerifyOtp() {
       console.error('Network error:', error);
     }
   };
+  const handleSendCodeAgain = async () => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/request-otp-e`, {
+        email,
+      });
+  
+      if (response.status === 200) {
+        setMessage('A new OTP has been sent to your email.');
+        setCountdown(60); // ตั้งเวลานับถอยหลัง 60 วินาที (1 นาที)
+      } else {
+        console.error('Failed to send OTP');
+        setMessage('Failed to send OTP. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      setMessage('Network error. Please try again later.');
+    }
+  };
+  useEffect(() => {
+    // เริ่มนับถอยหลังเมื่อ countdown มีค่าและมากกว่า 0
+    if (countdown > 0) {
+      const timer = setInterval(() => {
+        setCountdown(prev => prev - 1);
+      }, 1000);
+
+      // ล้าง timer เมื่อ countdown หมดหรือ component ถูกล้าง
+      return () => clearInterval(timer);
+    }
+  }, [countdown]);
+
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -109,9 +141,10 @@ function VerifyOtp() {
       <button
         type="button"
         className="mt-4 text-blue-500"
-        onClick={() => setMessage('A new OTP has been sent to your email.')}
+        onClick={handleSendCodeAgain}
+        disabled={countdown > 0} // ปุ่มจะ disable ขณะนับถอยหลัง
       >
-        Send code again
+        {countdown > 0 ? `Send code again in ${countdown}s` : 'Send code again'}
       </button>
     </div>
   </div>

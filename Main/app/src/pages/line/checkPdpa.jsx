@@ -48,7 +48,7 @@ const ConsentForm = () => {
         }
     
         try {
-            const response = await axios.post('http://localhost:3001/user/saveConsent', {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/saveConsent`, {
                 mobile,
                 email,
                 checkbox1,

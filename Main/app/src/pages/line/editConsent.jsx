@@ -21,7 +21,7 @@ const EditConsent = () => {
     // ตรวจสอบว่ามี consent PDPA ในฐานข้อมูลอยู่แล้วหรือไม่
     const checkExistingConsent = async (email) => {
         try {
-            const response = await axios.post('http://localhost:3001/user/check-consent', { email });
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/check-consent`, { email });
             if (response.data.success && response.data.consent) {
                 setCheckbox1(response.data.consent.checkbox1);
                 setCheckbox2(response.data.consent.checkbox2);
@@ -48,7 +48,7 @@ const EditConsent = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3001/user/saveConsent', {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/saveConsent`, {
                 email,
                 checkbox1,
                 checkbox2,
